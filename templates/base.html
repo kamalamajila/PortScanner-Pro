@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PortScanner Pro{% endblock %}</title>
+    <meta name="description" content="Advanced Flask-based port scanner with learning hub, scan history, and cybersecurity-inspired UI.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
+</head>
+<body>
+    <div class="site-shell">
+        <header class="topbar">
+            <div class="brand-wrap">
+                <div class="brand-icon">PS</div>
+                <div>
+                    <a href="{{ url_for('home') }}" class="brand-name">PortScanner Pro</a>
+                    <p class="brand-subtitle">Advanced TCP Port Intelligence Dashboard</p>
+                </div>
+            </div>
+
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="navbar" id="navbar">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('learning') }}">Learning</a>
+                <a href="{{ url_for('history') }}">History</a>
+            </nav>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <section class="flash-stack">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+        {% endwith %}
+
+        <main class="page-content">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="footer">
+            <div>
+                <h4>PortScanner Pro</h4>
+                <p>Built for cybersecurity learning, authorized testing, and portfolio showcasing.</p>
+            </div>
+            <div class="footer-note">
+                <p>Use only on systems you own or are authorized to assess.</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

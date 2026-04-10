@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Results | PortScanner Pro{% endblock %}
+
+{% block content %}
+<section class="results-hero">
+    <div class="section-heading">
+        <span class="eyebrow">Scan Results</span>
+        <h1>{{ scan_label }}</h1>
+        {% if result.error %}
+            <p class="error-text">{{ result.error }}</p>
+        {% else %}
+            <p>
+                Target: <strong>{{ result.target_input }}</strong> |
+                Resolved IP: <strong>{{ result.resolved_ip }}</strong> |
+                Range: <strong>{{ start_port }} - {{ end_port }}</strong>
+            </p>
+        {% endif %}
+    </div>
+
+    {% if not result.error %}
+    <div class="summary-grid">
+        <div class="summary-card">
+            <span>Total Open</span>
+            <h2>{{ result.open_ports|length }}</h2>
+        </div>
+        <div class="summary-card">
+            <span>Total Closed / No Response</span>
+            <h2>{{ result.closed_count }}</h2>
+        </div>
+        <div class="summary-card">
+            <span>Scan Duration</span>
+            <h2>{{ result.duration }}s</h2>
+        </div>
+    </div>
+    {% endif %}
+</section>
+
+{% if result.error %}
+<section class="empty-state">
+    <h3>Scan could not be completed</h3>
+    <p>Please go back, verify the target, and try again.</p>
+    <a href="{{ url_for('home') }}" class="secondary-btn">Back to Scanner</a>
+</section>
+{% else %}
+<section class="results-table-section">
+    <div class="table-toolbar">
+        <h2>Open Ports</h2>
+        <a href="{{ url_for('home') }}" class="secondary-btn">New Scan</a>
+    </div>
+
+    {% if result.open_ports %}
+    <div class="table-wrap">
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>Port</th>
+                    <th>State</th>
+                    <th>Service</th>
+                    <th>Risk Hint</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in result.open_ports %}
+                <tr>
+                    <td>{{ item.port }}</td>
+                    <td><span class="status-open">{{ item.state|upper }}</span></td>
+                    <td>{{ item.service }}</td>
+                    <td>
+                        {% if item.port in [21, 23, 445, 3389, 3306, 5432, 6379, 27017] %}
+                            Review exposure and verify access controls.
+                        {% elif item.port in [80, 443, 8080, 8443] %}
+                            Check web service hardening and TLS posture.
+                        {% elif item.port in [22] %}
+                            Restrict remote administration to trusted users and networks.
+                        {% else %}
+                            Confirm whether this service should be publicly reachable.
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h3>No open ports found</h3>
+        <p>No TCP ports in the selected range responded as open for this target.</p>
+    </div>
+    {% endif %}
+</section>
+{% endif %}
+{% endblock %}

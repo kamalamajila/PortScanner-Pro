@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Home | PortScanner Pro{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-copy">
+        <span class="eyebrow">Network Recon • TCP Scanning • Learning Hub</span>
+        <h1>Web-Based Port Scanner for Fast Security Testing</h1>
+        <p>
+            Scan common ports, custom ranges, or the full 1–65535 TCP range with a clean dashboard experience.
+            Review open ports, identify common services, and learn why important ports matter in real systems.
+        </p>
+
+        <div class="hero-stats">
+            <div class="stat-card">
+                <h3>65535</h3>
+                <p>Total TCP ports supported</p>
+            </div>
+            <div class="stat-card">
+                <h3>40+</h3>
+                <p>Important ports in learning hub</p>
+            </div>
+            <div class="stat-card">
+                <h3>Live</h3>
+                <p>Threaded scanning engine</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="scanner-panel">
+        <div class="panel-header">
+            <h2>Launch Scan</h2>
+            <p>Enter a domain or IP address and choose a scan mode.</p>
+        </div>
+
+        <form action="{{ url_for('scan') }}" method="POST" class="scan-form">
+            <label for="target">Target</label>
+            <input
+                type="text"
+                id="target"
+                name="target"
+                placeholder="Example: scanme.nmap.org or 192.168.1.1"
+                required
+            >
+
+            <label for="scan_mode">Scan Mode</label>
+            <select id="scan_mode" name="scan_mode">
+                {% for key, preset in presets.items() %}
+                    <option value="{{ key }}">{{ preset.label }}</option>
+                {% endfor %}
+                <option value="custom">Custom Range</option>
+            </select>
+
+            <div class="dual-grid" id="customRangeFields">
+                <div>
+                    <label for="start_port">Start Port</label>
+                    <input type="number" id="start_port" name="start_port" min="1" max="65535" placeholder="1">
+                </div>
+                <div>
+                    <label for="end_port">End Port</label>
+                    <input type="number" id="end_port" name="end_port" min="1" max="65535" placeholder="1024">
+                </div>
+            </div>
+
+            <label for="timeout">Timeout per Port (seconds)</label>
+            <input
+                type="number"
+                id="timeout"
+                name="timeout"
+                min="0.1"
+                max="3"
+                step="0.05"
+                value="0.35"
+                required
+            >
+
+            <button type="submit" class="primary-btn">Start Scan</button>
+        </form>
+    </div>
+</section>
+
+<section class="feature-section">
+    <div class="section-heading">
+        <span class="eyebrow">Capabilities</span>
+        <h2>Built Like a Real Portfolio Security Tool</h2>
+    </div>
+
+    <div class="feature-grid">
+        <article class="feature-card">
+            <h3>Preset-Based Scanning</h3>
+            <p>Quickly run top 100, top 1000, web, database, remote-access, or full-range scans.</p>
+        </article>
+        <article class="feature-card">
+            <h3>Readable Results</h3>
+            <p>Open ports are displayed with state and common service names to improve analysis speed.</p>
+        </article>
+        <article class="feature-card">
+            <h3>Learning-Centric Design</h3>
+            <p>Use the integrated learning hub to study high-value ports used in real enterprise environments.</p>
+        </article>
+    </div>
+</section>
+
+<section class="notice-section">
+    <div class="notice-card">
+        <h3>Authorized Use Only</h3>
+        <p>
+            This tool is intended for lab use, education, and authorized internal testing.
+            Never scan systems without permission.
+        </p>
+    </div>
+</section>
+{% endblock %}
